@@ -1,0 +1,8 @@
+# list/Makefile
+#
+# Makefile for list implementation and test file.
+#
+# <Manish Niure>
+
+lAB1 : list.c main.c list.h
+	gcc list.c main.c -o list.exe
