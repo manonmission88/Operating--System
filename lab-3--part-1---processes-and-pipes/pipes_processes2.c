@@ -13,48 +13,48 @@
 
 int main(int argc, char **argv)
 {
-  int pipefd[2];
-  int pid;
+    int pipefd[2];
+    int pid;
 
-  char *cat_args[] = {"cat", "scores", NULL};
-  char *grep_args[] = {"grep", "Lakers", NULL};
+    char *cat_args[] = {"cat", "scores", NULL};
+    char *grep_args[] = {"grep", "Lakers", NULL};
 
-  // make a pipe (fds go in pipefd[0] and pipefd[1])
+    // make a pipe (fds go in pipefd[0] and pipefd[1])
 
-  pipe(pipefd);
+    pipe(pipefd);
 
-  pid = fork();
+    pid = fork();
 
-  if (pid == 0)
+    if (pid == 0)
     {
-      // child gets here and handles "grep Villanova"
+        // child gets here and handles "grep Villanova"
 
-      // replace standard input with input part of pipe
+        // replace standard input with input part of pipe
 
-      dup2(pipefd[0], 0);
+        dup2(pipefd[0], 0);
 
-      // close unused hald of pipe
+        // close unused hald of pipe
 
-      close(pipefd[1]);
+        close(pipefd[1]);
 
-      // execute grep
+        // execute grep
 
-      execvp("grep", grep_args);
+        execvp("grep", grep_args);
     }
-  else
+    else
     {
-      // parent gets here and handles "cat scores"
+        // parent gets here and handles "cat scores"
 
-      // replace standard output with output part of pipe
+        // replace standard output with output part of pipe
 
-      dup2(pipefd[1], 1);
+        dup2(pipefd[1], 1);
 
-      // close unused unput half of pipe
+        // close unused unput half of pipe
 
-      close(pipefd[0]);
+        close(pipefd[0]);
 
-      // execute cat
+        // execute cat
 
-      execvp("cat", cat_args);
+        execvp("cat", cat_args);
     }
 }
