@@ -24,38 +24,51 @@ typedef int (*Comparer) (const void *a, const void *b);
  */
 int my_comparer(const void *this, const void *that)
 {
-	//TODO: IMPLEMENT ME!
-	return 0;
+    //TODO: IMPLEMENT ME!
+    Process *process_one = (Process *) this;
+    Process *process_two = (Process *) that;
+    if (process_one -> priority > process_two -> priority){
+        return -1;
+    } else if (process_one -> priority < process_two -> priority){
+        return 1;
+    } else {
+        if (process_one -> arrival_time > process_two -> arrival_time){
+            return 1;
+        } else if (process_one -> arrival_time < process_two -> arrival_time){
+            return -1;
+        }
+    }
+    return 0;
 }
 
 int main(int argc, char *argv[])
 {
 
-	if (argc < 2) {
-		   fprintf(stderr, "Usage: ./func-ptr <input-file-path>\n");
-		   fflush(stdout);
-		   return 1;
-	}
+    if (argc < 2) {
+        fprintf(stderr, "Usage: ./func-ptr <input-file-path>\n");
+        fflush(stdout);
+        return 1;
+    }
 
-	/*******************/
-	/* Parse the input */
-	/*******************/
-	FILE *input_file = fopen(argv[1], "r");
-	if (!input_file) {
-		   fprintf(stderr, "Error: Invalid filepath\n");
-		   fflush(stdout);
-		   return 1;
-	}
+    /*******************/
+    /* Parse the input */
+    /*******************/
+    FILE *input_file = fopen(argv[1], "r");
+    if (!input_file) {
+        fprintf(stderr, "Error: Invalid filepath\n");
+        fflush(stdout);
+        return 1;
+    }
 
-	Process *processes = parse_file(input_file);
+    Process *processes = parse_file(input_file);
 
-	/*******************/
-	/* sort the input  */
-	/*******************/
-	Comparer process_comparer = &my_comparer;
+    /*******************/
+    /* sort the input  */
+    /*******************/
+    Comparer process_comparer = &my_comparer;
 
 #if DEBUG
-	for (int i = 0; i < P_SIZE; i++) {
+    for (int i = 0; i < P_SIZE; i++) {
 		    printf("%d (%d, %d) ",
 				processes[i].pid,
 				processes[i].priority, processes[i].arrival_time);
@@ -63,24 +76,24 @@ int main(int argc, char *argv[])
 	printf("\n");
 #endif
 
-	qsort(processes, P_SIZE, sizeof(Process), process_comparer);
+    qsort(processes, P_SIZE, sizeof(Process), process_comparer);
 
-	/**************************/
-	/* print the sorted data  */
-	/**************************/
+    /**************************/
+    /* print the sorted data  */
+    /**************************/
 
-	for (int i = 0; i < P_SIZE; i++) {
-		    printf("%d (%d, %d)\n",
-				processes[i].pid,
-				processes[i].priority, processes[i].arrival_time);
-	}
-	fflush(stdout);
-	fflush(stderr);
+    for (int i = 0; i < P_SIZE; i++) {
+        printf("%d (%d, %d)\n",
+               processes[i].pid,
+               processes[i].priority, processes[i].arrival_time);
+    }
+    fflush(stdout);
+    fflush(stderr);
 
-	/************/
-	/* clean up */
-	/************/
-	free(processes);
-	fclose(input_file);
-	return 0;
+    /************/
+    /* clean up */
+    /************/
+    free(processes);
+    fclose(input_file);
+    return 0;
 }
